@@ -1,6 +1,6 @@
 {
-	"name": "vscode-forge-tools",
-	"displayName": "Autodesk Platform Services",
+	"name": "vscode-forge-tools-drofus",
+	"displayName": "Autodesk Platform Services (dRofus)",
 	"publisher": "petrbroz",
 	"icon": "resources/marketplace-logo.png",
 	"description": "Visual Studio Code extension for accessing Autodesk Platform Services.",
