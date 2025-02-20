@@ -6,7 +6,7 @@
 	"description": "Visual Studio Code extension for accessing Autodesk Platform Services.",
 	"author": "Petr Broz <petr.broz@autodesk.com>",
 	"license": "MIT",
-	"version": "2.7.1",
+	"version": "2.7.1-drofus",
 	"homepage": "https://marketplace.visualstudio.com/items?itemName=petrbroz.vscode-forge-tools",
 	"repository": {
 		"type": "git",
@@ -921,7 +921,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "NODE_ENV=production node ./esbuild.js",
+		"vscode:prepublish": "set NODE_ENV=production && node ./esbuild.js",
 		"build": "node ./esbuild.js"
 	},
 	"devDependencies": {

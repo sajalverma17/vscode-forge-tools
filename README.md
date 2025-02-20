@@ -1,3 +1,17 @@
+### How to pack using npm
+
+Install vsce
+```
+npm install -g vsce
+```
+
+Pack with vsce
+```
+vsce package --no-yarn
+```
+
+VSIX installer file will be generated.
+
 # Autodesk Platform Services (VSCode Extension)
 
 ![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/petrbroz.vscode-forge-tools.svg)
