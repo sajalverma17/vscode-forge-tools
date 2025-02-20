@@ -11,7 +11,7 @@ vsce package --no-yarn
 ```
 
 VSIX installer file will be generated.
-Go to VSCode, Ctrl+Shift+P -> Install from VSIX and provide the generated VSIX installer.
+Go to VSCode, `Ctrl + Shift + P` -> `Install from VSIX` and provide the generated file.
 
 # Autodesk Platform Services (VSCode Extension)
 

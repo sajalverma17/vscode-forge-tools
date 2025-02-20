@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { IContext, stringPropertySorter, showErrorMessage } from '../common';
 import { WebhookSystem, WEBHOOKS } from '../interfaces/webhooks';
-import { IWebhook as IApsSdkWebhook } from 'aps-sdk-node';
+import { IWebhook as ISdkWebhookType } from 'aps-sdk-node';
 
 export interface IWebhookSystem {
     type: 'system';
@@ -19,11 +19,12 @@ export interface IWebhookEvent {
 export interface IWebhook {
     type: 'hook';
     id: string;
+    displayName: string;
     system: string;
     event: string;
 }
 
-export type IWebhookDetails = IApsSdkWebhook & { hookAttribute?: any; };
+type IWebhookWithAttribute = ISdkWebhookType & { hookAttribute?: any; };
 
 type WebhookEntry = IWebhookSystem | IWebhookEvent | IWebhook;
 
@@ -37,6 +38,13 @@ function isWebhookEvent(entry: WebhookEntry): entry is IWebhookEvent {
 
 function isWebhook(entry: WebhookEntry): entry is IWebhook {
     return (<IWebhook>entry).type === 'hook';
+}
+
+function getWebhookDisplayName(webhook: IWebhookWithAttribute) {
+    var db = webhook.hookAttribute['Db'];
+    var server = new URL(webhook.callbackUrl).hostname;
+    var status = webhook.status;
+    return db ? `${db} ${server} (${status})` : webhook.hookId;
 }
 
 export class WebhooksDataProvider implements vscode.TreeDataProvider<WebhookEntry> {
@@ -65,7 +73,7 @@ export class WebhooksDataProvider implements vscode.TreeDataProvider<WebhookEntr
             node.iconPath = new vscode.ThemeIcon('symbol-event');
             return node;
         } else {
-            const node = new vscode.TreeItem(entry.id, vscode.TreeItemCollapsibleState.None);
+            const node = new vscode.TreeItem(entry.displayName, vscode.TreeItemCollapsibleState.None);
             node.contextValue = 'hook';
             node.iconPath = new vscode.ThemeIcon('megaphone');
             return node;
@@ -82,16 +90,11 @@ export class WebhooksDataProvider implements vscode.TreeDataProvider<WebhookEntr
             try {
                 const { system, event } = entry;
                 // @ts-ignore
-                const webhooks = await this._context.webhookClient.listHooks(system, event) as IWebhookDetails[];
+                const webhooks = await this._context.webhookClient.listHooks(system, event) as IWebhookWithAttribute[];
                 return webhooks.map(webhook => {
-
-                    var db = webhook.hookAttribute['Db'];
-                    var server = new URL(webhook.callbackUrl).hostname;
-                    var status = webhook.status;
-                    var displayId = db ? `${db} ${server} (${status})` : webhook.hookId;
-
-                    return { type: 'hook', id: displayId, system, event } as IWebhook;
-                }).sort(stringPropertySorter('id'));
+                    var displayName = getWebhookDisplayName(webhook);
+                    return { type: 'hook', id: webhook.hookId, displayName: displayName, system, event } as IWebhook;
+                }).sort(stringPropertySorter('displayName'));
             } catch(err) {
                 showErrorMessage(`Could not list webhooks`, err);
             }
