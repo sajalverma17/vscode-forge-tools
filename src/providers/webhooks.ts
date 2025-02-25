@@ -41,8 +41,8 @@ function isWebhook(entry: WebhookEntry): entry is IWebhook {
 }
 
 function getWebhookDisplayName(webhook: IWebhookWithAttribute) {
-    var db = webhook.hookAttribute['Db'];
-    var server = new URL(webhook.callbackUrl).hostname;
+    var db = webhook.hookAttribute['Db'] ?? webhook.hookId;
+    var server = webhook.hookAttribute['DbPublicServer'] ?? "";
     var status = webhook.status;
     return db ? `${db} ${server} (${status})` : webhook.hookId;
 }
